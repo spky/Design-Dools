@@ -852,15 +852,15 @@ Public Function bg_TorqueConvert(Value As Double, from_unit As String, to_unit A
     
     Select Case to_unit
         Case "N-m"
-            output = Value
+            output = default_unit_value
         Case "mN-m"
-            output = bg_ForceConvert(Value, "N", "mN")
+            output = bg_ForceConvert(default_unit_value, "N", "mN")
         Case "in-lb"
-            output = bg_LengthConvert(bg_ForceConvert(Value, "N", "lbf"), "m", "in")
+            output = bg_LengthConvert(bg_ForceConvert(default_unit_value, "N", "lbf"), "m", "in")
         Case "ft-lb"
-            output = bg_LengthConvert(bg_ForceConvert(Value, "N", "lbf"), "m", "ft")
+            output = bg_LengthConvert(bg_ForceConvert(default_unit_value, "N", "lbf"), "m", "ft")
         Case "in-oz"
-            output = bg_LengthConvert(bg_ForceConvert(Value, "N", "ozf"), "m", "in")
+            output = bg_LengthConvert(bg_ForceConvert(default_unit_value, "N", "ozf"), "m", "in")
     End Select
     
     bg_TorqueConvert = output

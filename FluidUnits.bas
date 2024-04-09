@@ -185,11 +185,9 @@ Public Function fluidConvert(Value As Double, from_unit As String, to_unit As St
             Case "Torque"
                 fluidConvert = bg_TorqueConvert(Value, from_unit, to_unit)
         End Select
-    End Select
-    
-    If fluidConvert = Empty Then
+    Case Else
         fluidConvert = "Cannot convert " & from_unit_type & " to " & to_unit_type
-    End If
+    End Select
 
 End Function
 
