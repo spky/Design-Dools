@@ -1,4 +1,5 @@
 import re
+import math
 
 def colon_reference_to_int(colon_reference):
     """Splits a string of format [A-Z][1-9]:[A-Z][1-9], converts them to 
@@ -35,9 +36,9 @@ def parse_reference(reference):
 def int_to_reference(int_reference_list):
     """Returns the equivalent reference to integer defined, indexed-0 column and row
     return int_to_column(column) + str(row)"""
-    if int_reference_list[1] < 1:
+    if int_reference_list[1] < 0:
         raise ValueError("Row cannot be less than 1")
-    return int_to_column(int_reference_list[0]) + str(int_reference_list[1])
+    return int_to_column(int_reference_list[0]) + str(int_reference_list[1]+1)
 
 def column_to_int(column_reference):
     """Returns column number corresponding to letter reference, ex: a or A = 0, 

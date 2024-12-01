@@ -1,10 +1,7 @@
 import os
-import re
-import math
 
 import openpyxl as opx
 import pandas as pd
-import numpy as np
 
 import excel_reference_managers as erm
 
@@ -39,12 +36,11 @@ class ExcelDool:
         
         # if file does not exist, create a blank excel file
         if not os.path.exists(self.absolute_path):
-            print("No file named " + self.name + " found, creating one")
-            with pd.ExcelWriter(self.absolute_path,
-                                engine=self.engine,
-                                mode="w") as new_xl_writer:
+            print("No file named " + self.name + " found, creating one...")
+            with self.new_pd_excel_writer() as xl_writer:
                 df = pd.DataFrame()
-                df.to_excel(new_xl_writer)
+                df.to_excel(xl_writer)
+            print(self.name + " created.")
         
         self.excel = pd.ExcelFile(self.absolute_path, self.engine)
         self.opx_workbook = opx.load_workbook(self.absolute_path)
@@ -52,6 +48,9 @@ class ExcelDool:
         self.sheets = {}
         for name in self.sheet_names:
             self.sheets[name] = SheetDool(name, self)
+    
+    def opx_save(self):
+        self.opx_workbook.save(self.absolute_path)
     
     def __enter__(self):
         match self.mode:
@@ -72,6 +71,15 @@ class ExcelDool:
     def __exit__(self, file_path, engine="openpyxl", mode="r"):
         if self.writer is not None:
             self.writer.close()
+    
+    def reload_opx_workbook(self):
+        self.opx_workbook = opx.load_workbook(self.absolute_path)
+    
+    def new_pd_excel_writer(self):
+        xl_writer = pd.ExcelWriter(self.absolute_path,
+                                   engine=self.engine,
+                                   mode="w")
+        return xl_writer
 
 class SheetDool:
     
@@ -104,10 +112,59 @@ class SheetDool:
                             + " does not have a table named " 
                             + table_name)
     
-    def format_link_text(self, cell_column, cell_row):
-        
-        cell = self.opx_sheet.cell(row=cell_row, column=cell_column)
-        print(cell.value)
+    def hide_link_text(self, cell_column, cell_row, replacement="LINK"):
+        """If the referenced cell's value is a link, the cell is changed 
+        to a hyperlink cell and its value is changed to the 
+        replacement text. Nothing is returned. This function does not save 
+        the changes, that must be done separately"""
+        index_0_row = cell_row + 1
+        index_0_column = cell_column + 1
+        cell = self.opx_sheet.cell(row=index_0_row, column=index_0_column)
+        value = cell.value
+        if value is not None and "http" in str(value):
+            cell.hyperlink = value
+            cell.value = replacement
+            cell.style = "Hyperlink"
+    
+    def hide_colon_reference_links(self, colon_reference, replacement="LINK"):
+        """formats all cells that have "http" in them as hyperlinks and 
+        changes their values to the replacement text. This function 
+        must be used to format links in excel since pandas cannot 
+        input links that are larger than 255 characters due to excel's 
+        hyperlink function character limit"""
+        cells = erm.colon_reference_to_int(colon_reference)
+        left_top = cells[0]
+        right_bot = cells[1]
+        cols = list(range(left_top[0], right_bot[0] + 1))
+        rows = list(range(left_top[1], right_bot[1] + 1))
+        self.reload_opx_sheet()
+        for row in rows:
+            for col in cols:
+                self.hide_link_text(col, row, replacement)
+        self.opx_save()
+    
+    def write_dataframe(self, df, start="A1"):
+        """Writes a dataframe to the sheet starting from the start cell. 
+        Returns the reference range of cells that were written to for 
+        any future processing"""
+        start_list = erm.reference_to_int(start)
+        start_column = start_list[0]
+        start_row = start_list[1]
+        with self.excel_dool.new_pd_excel_writer() as xl_writer:
+            df.to_excel(xl_writer,
+                        sheet_name=self.name,
+                        startrow=start_row,
+                        startcol=start_column,
+                        )
+        bottom_right = [start_column + df.shape[1], start_row + df.shape[0]]
+        return start + ":" + erm.int_to_reference(bottom_right)
+    
+    def reload_opx_sheet(self):
+        self.excel_dool.reload_opx_workbook()
+        self.opx_sheet = self.excel_dool.opx_workbook[self.name]
+    
+    def opx_save(self):
+        self.excel_dool.opx_save()
     
     @property
     def engine(self):
