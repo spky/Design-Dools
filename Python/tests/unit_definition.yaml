@@ -1,0 +1,93 @@
+---
+mass:
+  g: 1
+  lbm: 453.592
+  ozm: 28.3495
+  kg: 1000
+  mg: .001
+  grams: 1
+time:
+  s: 1
+  second: 1
+  min: 60
+  minute: 60
+  minutes: 60
+  hr: 3600
+  hour: 3600
+length:
+  m: 1
+  in: .0254
+  km: 1000
+  cm: .01
+  mm: .001
+  mi: 1609.34
+  mile: 1609.34
+  ft: .3048
+  yd: .9144
+area:
+  m2: 1
+  m^2: 1
+  cm2: .0001
+  cm^2: .0001
+  mm2: .000001
+  mm^2: .000001
+  km2: 1000000
+  km^2: 1000000
+  in2: 0.00064516
+  in^2: 0.00064516
+  ft2: 0.092903
+  ft^2: 0.092903
+  yd2: 0.836127
+  yd^2: 0.836127
+volume:
+  m3: 1
+  m^3: 1
+  cm3: .000001
+  cm^3: .000001
+  mm3: .000000001
+  mm^3: .000000001
+  km3: 1000000000
+  km^3: 1000000000
+  in3: .000016387
+  in^3: .000016387
+  ft3: 0.0283168
+  ft^3: 0.0283168
+  yd3: 0.764555
+  yd^3: 0.764555
+#moment_of_inertia:
+#
+#mass_flow:
+#
+#volume_flow:
+#
+#density:
+#
+#speed:
+#
+temperature:
+  K: 1
+  F: 
+    to_default: (X-32)*5/9+273.15
+    from_default: (X-273.15)*9/5+32
+  °F: 
+    to_default: (X-32)*5/9+273.15
+    from_default: (X-273.15)*9/5+32
+  C: 
+    to_default: X+273.15
+    from_default: X-273.15
+  °C: 
+    to_default: X+273.15
+    from_default: X-273.15
+  R:
+    to_default: X*5/9
+    from_default: X*9/5
+  °R:
+    to_default: X*5/9
+    from_default: X*9/5
+#pressure:
+#
+#torque:
+#
+#standard_volume_flow:
+
+
