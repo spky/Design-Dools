@@ -1,5 +1,6 @@
 import os
 import json
+import pandas as pd
 
 class JobParser:
     
@@ -39,7 +40,16 @@ class JobParser:
                 with open(filepath, "r") as company_file:
                     self.jobs[company_name] = json.load(company_file)
     
-    
+    def create_excel_dataframe(self):
+        data = []
+        for company in self.jobs:
+            for job in self.jobs[company]:
+                job_dict = dict(company_name=company,
+                                name=job,
+                                url=self.jobs[company][job]
+                                )
+                data.append(job_dict)
+        return pd.DataFrame(data)
     
     def write_ignore_file(self, file_name, indent=4):
         with open(file_name, "w") as file:
@@ -49,11 +59,3 @@ class JobParser:
         with open(file_name, "w") as file:
             json.dump(self.jobs, file, indent=indent)
         print(file_name + " written")
-
-
-ignore_file_name = "ignored_jobs.json"
-jobs_file_name = "all_jobs.json"
-companies = "C:/Users/George/Documents/GitHub/Design_Dools_Python/src/WebMEutility/company_jobs"
-jp = JobParser(jobs_file_name, companies, ignore_file_name)
-out_file = "unignored_jobs.json"
-jp.write_to_json(out_file)
