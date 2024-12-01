@@ -5,22 +5,27 @@ import math
 import pandas as pd
 sys.path.append("../src")
 
-from excel_dool import (ExcelDool, 
+from excel_dool import ExcelDool
+
+"""
                         column_to_int,
                         int_to_column,
                         int_to_reference,
                         parse_reference,
                         reference_to_int)
-
-from website_table import WebsiteTable
-from bs4 import BeautifulSoup
-
 """
+
+#from website_table import WebsiteTable
+#from bs4 import BeautifulSoup
+
+
 # Testing Reading Excel Files
 test_file = "test_xlsx.xlsx"
 xl = ExcelDool(test_file)
-"""
 
+print(xl.sheets["Sheet1"].read_colon_reference("A1:B3"))
+
+"""
 # Testing Writing Excel Files
 test_write_file = "test_out_xlsx.xlsx"
 
@@ -40,3 +45,4 @@ with ExcelDool(test_write_file, mode="w") as xl_dool:
 
 with ExcelDool(test_write_file, mode="w") as xl_dool:
     xl_dool.sheets["Sheet1"].format_link_text(1,1)
+"""
