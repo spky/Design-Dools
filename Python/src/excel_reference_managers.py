@@ -37,7 +37,7 @@ def int_to_reference(int_reference_list):
     """Returns the equivalent reference to integer defined, indexed-0 column and row
     return int_to_column(column) + str(row)"""
     if int_reference_list[1] < 0:
-        raise ValueError("Row cannot be less than 1")
+        raise ValueError("Row cannot be less than 0")
     return int_to_column(int_reference_list[0]) + str(int_reference_list[1]+1)
 
 def column_to_int(column_reference):
