@@ -139,7 +139,8 @@ class SheetDool:
                            index_col=index_col)
         return df
     
-    def hide_link_text(self, cell_column, cell_row, replacement="LINK"):
+    def hide_link_text(self, cell_column, cell_row, 
+        replacement="LINK", url_key="http"):
         """If the referenced cell's value is a link, the cell is changed 
         to a hyperlink cell and its value is changed to the 
         replacement text. Nothing is returned. This function does not save 
@@ -148,12 +149,13 @@ class SheetDool:
         index_0_column = cell_column + 1
         cell = self.opx_sheet.cell(row=index_0_row, column=index_0_column)
         value = cell.value
-        if value is not None and "http" in str(value):
+        if value is not None and url_key in str(value):
             cell.hyperlink = value
             cell.value = replacement
             cell.style = "Hyperlink"
     
-    def hide_colon_reference_links(self, colon_reference, replacement="LINK"):
+    def hide_colon_reference_links(self, colon_reference,
+                                   replacement="LINK", url_key="http"):
         """formats all cells that have "http" in them as hyperlinks and 
         changes their values to the replacement text. This function 
         must be used to format links in excel since pandas cannot 
@@ -167,7 +169,7 @@ class SheetDool:
         self.reload_opx_sheet()
         for row in rows:
             for col in cols:
-                self.hide_link_text(col, row, replacement)
+                self.hide_link_text(col, row, replacement, url_key)
         self.opx_save()
     
     def _add_dataframe(self, df, start="A1", mode="a", if_sheet_exists=None):
@@ -212,6 +214,9 @@ class SheetDool:
             adjusted_width = (max_length + 4)
             self.opx_sheet.column_dimensions[column_letter].width = adjusted_width
         self.opx_save()
+    
+    def calculate_required_width(cell):
+        pass
     
     def reload_opx_sheet(self):
         self.excel_dool.reload_opx_workbook()
